@@ -1,10 +1,5 @@
 import math
 
-mean = lambda x: round(sum(x)/len(x), 2)
-
-def moving_average(data: list[float], n: int):
-    result = [mean(data[i-n//2:i+(n-n//2)]) if len(data) - n//2 > i >= n//2 else None for i in range(len(data))]
-    return result
 
 class Winters:
     def __init__(self):
@@ -59,10 +54,12 @@ class Winters:
 
 
     def score(self):
-        mad = sum([abs(self.data[i] - self.forecasted[i]) for i in range(len(self.data))])
-        msd = sum([(self.data[i] - self.forecasted[i])**2 for i in range(len(self.data))])
-        mape = 100 * sum([abs(self.data[i] - self.forecasted[i])/self.data[i] for i in range(len(self.data))])
-        return {'MAD': mad, 'MSD': msd, 'MAPE': mape}
+        score = {
+            'mean_absolute_error': sum([abs(self.data[i] - self.forecasted[i]) for i in range(len(self.data))]),
+            'mean_squared_error': sum([(self.data[i] - self.forecasted[i])**2 for i in range(len(self.data))]),
+            'mean_absolute_percentage_error': 100 * sum([abs(self.data[i] - self.forecasted[i])/self.data[i] for i in range(len(self.data))])
+        }
+        return score
 
     def displayModelComponents(self):
         print( f"""Trained Model Components
@@ -74,15 +71,10 @@ class Winters:
         """)
 
 
-
-d = [53, 22, 37, 45, 58, 25, 40, 50, 62, 27, 44, 56]
-
-model = Winters()
-
-model.train(data=d, m=4, alpha=0.2, beta=0.3, gamma=0.002)
-
-model.displayModelComponents()
-
-print(f'Forecasted Values: {model.forcast(n=1)}')
-
-print(f'\n\nModel Evaluation: {model.score()}')
+if __name__ == '__main__':
+    d = [53, 22, 37, 45, 58, 25, 40, 50, 62, 27, 44, 56]
+    model = Winters()
+    model.train(data=d, m=4, alpha=0.2, beta=0.3, gamma=0.002)
+    model.displayModelComponents()
+    print(f'Forecasted Values: {model.forcast(n=1)}')
+    print(f'\n\nModel Evaluation: {model.score()}')
