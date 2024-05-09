@@ -24,7 +24,7 @@ class Winters:
         i = 0
         S[0] = round(data[0] / sum(data[:m]), 2)
         L[0] = math.ceil(data[0] / S[0])
-        T[0] = (sum(data[m:2 * m]) - sum(data[:m])) / 4
+        T[0] = (sum(data[m:2 * m]) - sum(data[:m])) / m
         F[0] = data[0]
 
         for i in range(1, len(data)):
