@@ -9,6 +9,8 @@ class Winters:
         if m < 2: raise ValueError('number of seasons must be minimum 2')
         if not isinstance(data, list) or any(not isinstance(value, float | int) for value in data):
             raise ValueError('data must be a list of floats or integers')
+        if not all(isinstance(p, int | float) for p in [alpha, beta, gamma]):
+            raise ValueError('parameters must be numbers')
         if not (0<=alpha<=1 and 0<=beta<=1 and 0<=gamma<=1):
             raise ValueError('alpha, beta & gamma must be between 0 and 1')
         if len(data) < 2 * m:
@@ -44,7 +46,7 @@ class Winters:
         F = self.forecasted
         m = self.nb_seasons
         for i in range(len(self.data), len(self.data) + n):
-            S[i] = self.gamma * (self.data[i - m] / L[i - m]) + (1 + self.gamma) * S[i - m]
+            S[i] = self.gamma * (F[i - m] / L[i - m]) + (1 + self.gamma) * S[i - m]
             F.append((L[i - 1] + T[i - 1]) * S[i])
             L[i] = self.alpha * (F[i] / S[i - m]) + (1 - self.alpha) * (L[i - 1] + T[i - 1])
             T[i] = self.beta * (L[i] - L[i - 1]) + (1 - self.beta) * T[i - 1]
@@ -76,5 +78,5 @@ if __name__ == '__main__':
     model = Winters()
     model.train(data=d, m=4, alpha=0.2, beta=0.3, gamma=0.002)
     model.displayModelComponents()
-    print(f'Forecasted Values: {model.forcast(n=1)}')
+    print(f'Forecasted Values: {model.forcast(n=10)}')
     print(f'\n\nModel Evaluation: {model.score()}')
